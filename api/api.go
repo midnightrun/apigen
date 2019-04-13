@@ -41,6 +41,7 @@ func (r *LoginRequest) Method() string {
 }
 
 type LoginResponse struct {
+	// SessionID identifies the session cookie as UUID.
 	SessionID uuid.UUID `json:"id"`
 }
 
@@ -56,8 +57,10 @@ func (a *api) Login(ctx context.Context, req LoginRequest) (*LoginResponse, erro
 }
 
 type CreatePostRequest struct {
+	// Body is the post's content written in Markdown syntax.
 	Body string `json:"body"`
-	URL  string `json:"url"`
+	// URL associates the post with a link.
+	URL string `json:"url"`
 }
 
 func (r *CreatePostRequest) Method() string {
@@ -65,9 +68,11 @@ func (r *CreatePostRequest) Method() string {
 }
 
 type CreatePostResponse struct {
+	// ID identifies the newly created post.
 	ID int `json:"id"`
 }
 
+// CreatePost creates a new post and enters it to th feeds of the users following the author.
 func (a *api) CreatePost(ctx context.Context, req CreatePostRequest) (*CreatePostResponse, error) {
 	return &CreatePostResponse{
 		ID: rand.Int(),
@@ -75,6 +80,10 @@ func (a *api) CreatePost(ctx context.Context, req CreatePostRequest) (*CreatePos
 }
 
 type GetFeedRequest struct {
+	// PerPage specifies the number of posts returned per request.
+	PerPage int `json:"pageSize"`
+	// Page for pagination; the page to retrieve.
+	Page int `json:"pageNumber"`
 }
 
 func (r *GetFeedRequest) Method() string {
@@ -82,9 +91,11 @@ func (r *GetFeedRequest) Method() string {
 }
 
 type GetFeedResponse struct {
+	// Posts is the lists of all posts.
 	Posts []string `json:"posts"`
 }
 
+// GetFeed retrieves the feed for the given user.
 func (a *api) GetFeed(ctx context.Context, req GetFeedRequest) (*GetFeedResponse, error) {
 	return &GetFeedResponse{
 		Posts: []string{},
